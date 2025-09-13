@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
-const baseUrl = "https://api.impcargo.com/v1";
-const timeout = 20000;
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const timeout = process.env.NEXT_PUBLIC_API_TIMEOUT;
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: baseUrl,
