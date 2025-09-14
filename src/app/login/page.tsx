@@ -33,11 +33,18 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let formattedIndex = index;
+    if (formattedIndex.startsWith("0")) {
+      formattedIndex = "+98" + formattedIndex.slice(1);
+    }
+
     try {
       const payload = {
-        index,
+        index: formattedIndex,
         password,
       };
+
       const { data } = await login(payload);
 
       const token = data.data.token;
@@ -46,7 +53,7 @@ export default function LoginPage() {
 
       document.cookie = `token=${token}; path=/; max-age=43200; Secure; SameSite=Strict`;
 
-      router.push("/dashboard");
+      location.href = "/dashboard";
     } catch (err) {
       console.error(err);
     }
@@ -54,15 +61,10 @@ export default function LoginPage() {
 
   useEffect(() => {
     const token = getCookie("token");
-
     if (token) {
       router.push("/dashboard");
     }
-
-    if (index.startsWith("0")) {
-      setIndex((index) => "+98" + index.slice(1));
-    }
-  }, [index]);
+  }, [router]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
