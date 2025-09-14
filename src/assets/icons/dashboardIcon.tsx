@@ -3,7 +3,12 @@ import { SvgIcon } from "@mui/material";
 
 function DashboardIcon() {
   return (
-    <SvgIcon>
+    <SvgIcon
+      sx={{
+        width: "20px",
+        height: "20px",
+      }}
+    >
       <svg
         width="24"
         height="24"

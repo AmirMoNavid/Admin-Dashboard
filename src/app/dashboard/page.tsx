@@ -1,8 +1,8 @@
 "use client";
 
 import { Box } from "@mui/material";
-import Sidebar from "@/app/components/dashboard/SideBar";
-import Information from "../components/dashboard/Information";
+import Sidebar from "@/app/dashboard/components/SideBar";
+import Information from "./components/Information";
 
 export default function DashboardPage() {
   return (

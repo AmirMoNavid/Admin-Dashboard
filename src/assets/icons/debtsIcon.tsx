@@ -3,7 +3,12 @@ import React from "react";
 
 function DebtsIcon() {
   return (
-    <SvgIcon>
+    <SvgIcon
+      sx={{
+        width: "35px",
+        height: "35px",
+      }}
+    >
       <svg
         width="28"
         height="28"

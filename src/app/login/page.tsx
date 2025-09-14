@@ -13,52 +13,74 @@ import {
   Avatar,
   Link,
   SvgIcon,
+  InputAdornment,
+  IconButton,
+  Divider,
 } from "@mui/material";
 import LogoIcon from "@/assets/icons/logo";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import { getCookie } from "cookies-next";
 
 export default function LoginPage() {
   const [index, setIndex] = useState("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
 
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const payload = {
         index,
         password,
       };
       const { data } = await login(payload);
+
       const token = data.data.token;
 
       dispatch(setToken(token));
 
-      document.cookie = `token=${token}; path=/; max-age=86400; Secure; SameSite=Strict`;
+      document.cookie = `token=${token}; path=/; max-age=43200; Secure; SameSite=Strict`;
 
-      window.location.href = "/dashboard";
+      router.push("/dashboard");
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
+    const token = getCookie("token");
+
+    if (token) {
+      router.push("/dashboard");
+    }
+
     if (index.startsWith("0")) {
       setIndex((index) => "+98" + index.slice(1));
     }
   }, [index]);
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <Box display="flex" justifyContent="center" height="100vh">
       <Box
         flex={2}
-        bgcolor="#f5f5f5"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
         padding={2}
-        sx={{ display: { lg: "flex", xs: "none" } }}
+        sx={{
+          display: { lg: "flex", xs: "none" },
+          background:
+            "linear-gradient(45deg,rgba(212, 188, 188, 0.6) 0%, rgba(255, 255, 255, 0.88) 60%)",
+        }}
       >
         <Typography sx={{ fontWeight: 700 }} variant="h4" gutterBottom>
           Simplify Your
@@ -75,16 +97,21 @@ export default function LoginPage() {
         flex={1.5}
         display="flex"
         justifyContent="center"
-        alignItems="center"
         padding={1}
         minHeight="100vh"
-        bgcolor="#f5f5f5"
+        sx={{
+          alignItems: { xs: "center", lg: "end" },
+        }}
       >
         <Paper
           elevation={0}
-          sx={{ p: 4, width: 400, backgroundColor: "#f5f5f5" }}
+          sx={{
+            p: 4,
+            width: 400,
+            backgroundColor: "#fff",
+          }}
         >
-          <Typography fontWeight="700" variant="h5" gutterBottom>
+          <Typography fontWeight="700" variant="h6" gutterBottom>
             Get started absolutely free
           </Typography>
           <Box
@@ -94,39 +121,97 @@ export default function LoginPage() {
             gap={1}
             fontWeight="600"
           >
-            <Typography>Already have an account?</Typography>
-            <Link href="#" underline="hover" color="textTertiary">
+            <Typography variant="subtitle1">
+              Already have an account?
+            </Typography>
+            <Link
+              href="#"
+              underline="hover"
+              color="textTertiary"
+              variant="subtitle1"
+            >
               Login
             </Link>
           </Box>
-          <form onSubmit={handleSubmit}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 2 }}
+          >
             <TextField
+              fullWidth
               variant="outlined"
               placeholder="Email address or phone number"
-              fullWidth
-              margin="normal"
+              margin="dense"
               value={index}
               onChange={(e) => setIndex(e.target.value)}
             />
             <TextField
-              type="password"
-              variant="outlined"
               fullWidth
-              margin="normal"
+              variant="outlined"
               placeholder="Password"
+              margin="dense"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Button
               type="submit"
+              fullWidth
               variant="contained"
               color="secondary"
-              fullWidth
-              sx={{ mt: 2 }}
+              sx={{ mt: 2, textTransform: "none" }}
             >
-              Next
+              Create Account
             </Button>
-          </form>
+          </Box>
+          <Box mt={2} textAlign="center">
+            <Typography
+              sx={{ fontSize: "13px", whiteSpace: "nowrap" }}
+              color="#6B7280"
+            >
+              By signing up, I agree to{" "}
+              <Link
+                href="#"
+                sx={{
+                  textDecoration: "underline",
+                  fontWeight: 500,
+                  color: "#111827",
+                }}
+              >
+                Terms of Use
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="#"
+                sx={{
+                  textDecoration: "underline",
+                  fontWeight: 500,
+                  color: "#111827",
+                }}
+              >
+                Privacy Policy
+              </Link>
+              .
+            </Typography>
+          </Box>
+          <Box sx={{ my: 4, display: { xs: "none", lg: "block" } }}>
+            <Divider
+              sx={{ color: "#9CA3AF", fontWeight: 500, fontSize: "14px" }}
+            >
+              OR
+            </Divider>
+          </Box>
         </Paper>
       </Box>
 

@@ -28,9 +28,6 @@ const theme = createTheme({
           fontSize: "13px",
           padding: "10px",
           cursor: "pointer",
-          "&:hover": {
-            backgroundColor: "#f5f4f4ff",
-          },
         },
       },
     },
